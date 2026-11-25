@@ -1,0 +1,38 @@
+@model PortalWebnovels.Models.ViewModels.GeneroViewModel
+
+@{
+    ViewData["Title"] = "Editar gênero";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning py-3">
+                <h4 class="mb-0 fw-bold">✏️ Editar gênero</h4>
+            </div>
+            <div class="card-body p-4 bg-white">
+                <form asp-action="Editar" asp-route-id="@Model.Id" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label fw-semibold"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">&larr; Voltar</a>
+                        <button type="submit" class="btn btn-success px-4">💾 Salvar alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

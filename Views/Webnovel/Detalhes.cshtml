@@ -1,0 +1,115 @@
+@model WebnovelDetalhesViewModel
+@{
+    var obra = Model.Obra;
+    ViewData["Title"] = obra.Titulo;
+}
+
+<div class="card shadow-sm border-0 mb-4"><div class="card-body p-4">
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1">@obra.Titulo</h2>
+            <p class="text-muted mb-2">por <strong>@Model.AutorNome</strong> &middot; publicada em @obra.DataCriacao.ToString("dd/MM/yyyy")</p>
+        </div>
+        <div><span class="badge @obra.Status.ClasseBadge() fs-6">@obra.Status.Descricao()</span></div>
+    </div>
+
+    <p class="mb-2">
+        @foreach (var g in obra.Generos)
+        {
+            <span class="badge bg-info text-dark">@g.Nome</span>
+        }
+    </p>
+    <p class="mb-2">@(obra.Avaliacoes.Count == 0 ? "Sem avaliações ainda" : $"⭐ {obra.MediaAvaliacoes():0.0} ({obra.Avaliacoes.Count} avaliação(ões))")</p>
+    <p class="mb-3" style="white-space: pre-line;">@obra.Sinopse</p>
+
+    <div class="d-flex flex-wrap gap-2">
+        @if (Model.ContinuarCapituloId != null)
+        {
+            <a asp-controller="Capitulo" asp-action="Ler" asp-route-id="@Model.ContinuarCapituloId" class="btn btn-primary">▶ Continuar de onde parou</a>
+        }
+        @if (Model.Logado)
+        {
+            <form asp-controller="Biblioteca" asp-action="@(Model.NaBiblioteca ? "Remover" : "Adicionar")" method="post">
+                <input type="hidden" name="webnovelId" value="@obra.Id" />
+                <button type="submit" class="btn @(Model.NaBiblioteca ? "btn-outline-secondary" : "btn-outline-primary")">
+                    @(Model.NaBiblioteca ? "📚 Remover da biblioteca" : "📚 Adicionar à biblioteca")
+                </button>
+            </form>
+            <form asp-controller="Favoritos" asp-action="@(Model.NosFavoritos ? "Remover" : "Adicionar")" method="post">
+                <input type="hidden" name="webnovelId" value="@obra.Id" />
+                <button type="submit" class="btn @(Model.NosFavoritos ? "btn-outline-secondary" : "btn-outline-danger")">
+                    @(Model.NosFavoritos ? "💔 Remover dos favoritos" : "❤️ Favoritar")
+                </button>
+            </form>
+            @if (Model.MinhaAvaliacao == null)
+            {
+                <a asp-controller="Avaliacao" asp-action="Avaliar" asp-route-webnovelId="@obra.Id" class="btn btn-outline-warning">⭐ Avaliar</a>
+            }
+            else
+            {
+                <a asp-controller="Avaliacao" asp-action="Editar" asp-route-webnovelId="@obra.Id" class="btn btn-outline-warning">⭐ Editar minha avaliação</a>
+            }
+        }
+        @if (Model.EhAutor)
+        {
+            <a asp-controller="Capitulo" asp-action="Criar" asp-route-webnovelId="@obra.Id" class="btn btn-success">➕ Novo capítulo</a>
+        }
+        @if (Model.PodeGerenciar)
+        {
+            <a asp-action="Editar" asp-route-id="@obra.Id" class="btn btn-warning">✏️ Editar obra</a>
+            <a asp-action="Excluir" asp-route-id="@obra.Id" class="btn btn-danger">🗑️ Excluir</a>
+        }
+    </div>
+</div></div>
+
+<h4 class="fw-bold">Capítulos</h4>
+<div class="card shadow-sm border-0 mb-4"><div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+            <tr><th style="width:80px;">Nº</th><th>Título</th><th>Publicado em</th><th>Modificado em</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var c in obra.Capitulos.OrderBy(c => c.Numero))
+            {
+                <tr>
+                    <td class="fw-bold">@c.Numero</td>
+                    <td><a asp-controller="Capitulo" asp-action="Ler" asp-route-id="@c.Id" class="text-decoration-none">@c.Titulo</a></td>
+                    <td>@c.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(c.DataModificacao.HasValue ? c.DataModificacao.Value.ToString("dd/MM/yyyy HH:mm") : "—")</td>
+                    <td class="text-end">
+                        <a asp-controller="Capitulo" asp-action="Ler" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Ler</a>
+                        @if (Model.EhAutor)
+                        {
+                            <a asp-controller="Capitulo" asp-action="Editar" asp-route-id="@c.Id" class="btn btn-sm btn-outline-warning">✏️</a>
+                            @if (obra.Capitulos.Count > 1)
+                            {
+                                <a asp-controller="Capitulo" asp-action="Excluir" asp-route-id="@c.Id" class="btn btn-sm btn-outline-danger" title="Excluir capítulo">🗑️</a>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div></div>
+
+<h4 class="fw-bold">Avaliações</h4>
+@if (!obra.Avaliacoes.Any())
+{
+    <p class="text-muted">Ninguém avaliou esta obra ainda.</p>
+}
+else
+{
+    foreach (var a in obra.Avaliacoes)
+    {
+        <div class="card shadow-sm border-0 mb-2"><div class="card-body">
+            <strong>@(Model.NomesUsuarios.TryGetValue(a.UsuarioId, out var nome) ? nome : "?")</strong>
+            &middot; @(new string('★', a.Nota))@(new string('☆', 5 - a.Nota))
+            <span class="text-muted small">&middot; @a.Data.ToString("dd/MM/yyyy")</span>
+            @if (!string.IsNullOrWhiteSpace(a.Texto))
+            {
+                <p class="mb-0 mt-2" style="white-space: pre-line;">@a.Texto</p>
+            }
+        </div></div>
+    }
+}

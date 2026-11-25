@@ -1,0 +1,58 @@
+@model WebnovelListaViewModel
+@{
+    ViewData["Title"] = Model.Minhas ? "Minhas obras" : "Webnovels";
+    var logado = Context.Session.GetInt32("UsuarioId") != null;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">@(Model.Minhas ? "Minhas obras" : "Webnovels")</h2>
+    @if (logado)
+    {
+        <a asp-action="Criar" class="btn btn-success shadow-sm">➕ Publicar webnovel</a>
+    }
+</div>
+
+<form method="get" asp-action="Index" class="row g-2 mb-4">
+    <input type="hidden" name="minhas" value="@Model.Minhas.ToString().ToLower()" />
+    <div class="col-md-6">
+        <input type="text" name="busca" value="@Model.Busca" class="form-control" placeholder="Buscar pelo título..." />
+    </div>
+    <div class="col-md-4">
+        <select name="generoId" class="form-select">
+            <option value="">Todos os gêneros</option>
+            @foreach (var g in Model.Generos)
+            {
+                <option value="@g.Id" selected="@(Model.GeneroId == g.Id)">@g.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-grid"><button type="submit" class="btn btn-dark">🔍 Filtrar</button></div>
+</form>
+
+@if (!Model.Obras.Any())
+{
+    <div class="text-center py-5 bg-white rounded shadow-sm"><p class="text-muted fs-5 mb-0">Nenhuma webnovel encontrada.</p></div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var o in Model.Obras)
+        {
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0"><div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title mb-1"><a asp-action="Detalhes" asp-route-id="@o.Id" class="text-decoration-none">@o.Titulo</a></h5>
+                        <span class="badge @o.Status.ClasseBadge() align-self-start">@o.Status.Descricao()</span>
+                    </div>
+                    <p class="text-muted small mb-2">por @o.AutorNome &middot; @o.TotalCapitulos capítulo(s) &middot;
+                        @(o.Media.HasValue ? $"⭐ {o.Media.Value:0.0} ({o.TotalAvaliacoes})" : "sem avaliações")</p>
+                    <p class="card-text">@(o.Sinopse.Length > 140 ? o.Sinopse.Substring(0, 140) + "..." : o.Sinopse)</p>
+                    @if (!string.IsNullOrEmpty(o.Generos))
+                    {
+                        <span class="small text-secondary">🏷️ @o.Generos</span>
+                    }
+                </div></div>
+            </div>
+        }
+    </div>
+}

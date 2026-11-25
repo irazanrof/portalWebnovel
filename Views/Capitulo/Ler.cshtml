@@ -1,0 +1,81 @@
+@model CapituloLeituraViewModel
+@{ ViewData["Title"] = $"{Model.Obra.Titulo} – Cap. {Model.Capitulo.Numero}"; }
+
+<nav class="mb-3"><a asp-controller="Webnovel" asp-action="Detalhes" asp-route-id="@Model.Obra.Id">&larr; @Model.Obra.Titulo</a></nav>
+
+<div class="card shadow-sm border-0 mb-3"><div class="card-body p-4">
+    <h3 class="fw-bold">Capítulo @Model.Capitulo.Numero &ndash; @Model.Capitulo.Titulo</h3>
+    <p class="text-muted small">
+        Publicado em @Model.Capitulo.DataPublicacao.ToString("dd/MM/yyyy HH:mm")
+        @if (Model.Capitulo.DataModificacao.HasValue)
+        {
+            <span>&middot; modificado em @Model.Capitulo.DataModificacao.Value.ToString("dd/MM/yyyy HH:mm")</span>
+        }
+    </p>
+    <hr />
+    <div style="white-space: pre-line; font-size: 1.1rem; line-height: 1.8;">@Model.Capitulo.Conteudo</div>
+    <hr />
+    <div class="d-flex justify-content-between">
+        @if (Model.Anterior != null)
+        {
+            <a asp-action="Ler" asp-route-id="@Model.Anterior.Id" class="btn btn-outline-primary">&larr; Cap. @Model.Anterior.Numero</a>
+        }
+        else { <span></span> }
+        @if (Model.EhAutor)
+        {
+            <div class="d-flex gap-2">
+                <a asp-action="Editar" asp-route-id="@Model.Capitulo.Id" class="btn btn-outline-warning">✏️ Editar</a>
+                @if (Model.Obra.Capitulos.Count > 1)
+                {
+                    <a asp-action="Excluir" asp-route-id="@Model.Capitulo.Id" class="btn btn-outline-danger">🗑️ Excluir</a>
+                }
+            </div>
+        }
+        @if (Model.Proximo != null)
+        {
+            <a asp-action="Ler" asp-route-id="@Model.Proximo.Id" class="btn btn-outline-primary">Cap. @Model.Proximo.Numero &rarr;</a>
+        }
+        else { <span></span> }
+    </div>
+</div></div>
+
+<h5 class="fw-bold">Comentários (@Model.Comentarios.Count)</h5>
+
+@if (Model.Logado)
+{
+    <form asp-controller="Comentario" asp-action="Criar" method="post" class="mb-3">
+        <input type="hidden" name="capituloId" value="@Model.Capitulo.Id" />
+        <textarea name="texto" class="form-control mb-2" rows="3" maxlength="1000" placeholder="Escreva um comentário (até 1000 caracteres)"></textarea>
+        <button type="submit" class="btn btn-primary btn-sm">💬 Comentar</button>
+    </form>
+}
+else
+{
+    <p class="text-muted"><a asp-controller="Conta" asp-action="Entrar">Entre</a> para comentar.</p>
+}
+
+@foreach (var c in Model.Comentarios)
+{
+    <div class="card shadow-sm border-0 mb-2"><div class="card-body py-2">
+        <div class="d-flex justify-content-between">
+            <div>
+                <strong>@c.UsuarioNome</strong>
+                <span class="text-muted small">&middot; @c.Data.ToString("dd/MM/yyyy HH:mm")@(c.DataEdicao.HasValue ? " (editado)" : "")</span>
+            </div>
+            <div class="d-flex gap-1">
+                @if (c.PodeEditar)
+                {
+                    <a asp-controller="Comentario" asp-action="Editar" asp-route-id="@c.Id" class="btn btn-sm btn-outline-warning">✏️</a>
+                }
+                @if (c.PodeExcluir)
+                {
+                    <form asp-controller="Comentario" asp-action="Excluir" asp-route-id="@c.Id" method="post"
+                          onsubmit="return confirm('Excluir este comentário?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </form>
+                }
+            </div>
+        </div>
+        <p class="mb-0 mt-1" style="white-space: pre-line;">@c.Texto</p>
+    </div></div>
+}
