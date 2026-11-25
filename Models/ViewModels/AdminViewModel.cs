@@ -1,6 +1,6 @@
 namespace PortalWebnovels.Models.ViewModels;
 
-/// <summary>Dados da tela de gerenciamento de usuários: termo pesquisado e resultado.</summary>
+/// Dados da tela de gerenciamento de usuários: termo pesquisado e resultado.
 public class AdminViewModel
 {
     public string? Busca { get; set; }

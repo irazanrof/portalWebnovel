@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PortalWebnovels.Models.ViewModels;
 
-/// <summary>
 /// ViewModel: modelo feito para o FORMULÁRIO (tela). Tem 'set' público porque o ASP.NET
 /// precisa preencher os campos ao receber o formulário (Model Binding).
 /// As Data Annotations validam o formato dos campos (ModelState);
 /// as regras de negócio continuam dentro da entidade Genero.
-/// </summary>
 public class GeneroViewModel
 {
     public int Id { get; set; }

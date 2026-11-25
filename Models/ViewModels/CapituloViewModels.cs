@@ -5,11 +5,11 @@ namespace PortalWebnovels.Models.ViewModels;
 
 public class CapituloViewModel
 {
-    public int Id { get; set; }                 // 0 = novo capítulo
+    public int Id { get; set; }
     public int WebnovelId { get; set; }
     public string? WebnovelTitulo { get; set; }
-    public int? Numero { get; set; }            // só exibição (o sistema define)
-    public bool PrimeiroCapitulo { get; set; }  // true = capítulo que conclui a publicação de uma webnovel nova
+    public int? Numero { get; set; }
+    public bool PrimeiroCapitulo { get; set; } 
 
     [Required(ErrorMessage = "Informe o título do capítulo.")]
     [StringLength(150, ErrorMessage = "O título pode ter no máximo 150 caracteres.")]
@@ -31,7 +31,7 @@ public class CapituloExcluirViewModel
     public int Numero { get; set; }
     public string Titulo { get; set; } = string.Empty;
     public int TotalComentarios { get; set; }
-    public int CapitulosRenumerados { get; set; }   // quantos capítulos seguintes descem uma posição
+    public int CapitulosRenumerados { get; set; }
 }
 
 public class ComentarioItemViewModel

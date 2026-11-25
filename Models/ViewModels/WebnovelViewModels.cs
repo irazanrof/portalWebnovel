@@ -5,7 +5,6 @@ using PortalWebnovels.Models.Enums;
 
 namespace PortalWebnovels.Models.ViewModels;
 
-/// <summary>Uma linha da listagem de obras (montada por uma consulta SQL com JOIN/COUNT/AVG).</summary>
 public class WebnovelResumoViewModel
 {
     public int Id { get; set; }
@@ -52,10 +51,8 @@ public class WebnovelCriarViewModel
     public IEnumerable<Genero> GenerosDisponiveis { get; set; } = new List<Genero>();
 }
 
-/// <summary>
 /// Dados da obra guardados na Session entre a 1ª etapa (dados da webnovel) e a 2ª (primeiro capítulo).
 /// Nada é gravado no banco até o capítulo ser criado: sem capítulo, a webnovel não é publicada.
-/// </summary>
 public class WebnovelRascunho
 {
     public string Titulo { get; set; } = string.Empty;

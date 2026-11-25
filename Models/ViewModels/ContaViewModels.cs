@@ -48,7 +48,6 @@ public class PerfilViewModel
     [DisplayName("Nome")]
     public string Nome { get; set; } = string.Empty;
 
-    // Só para exibição (não é editável)
     public string? Email { get; set; }
     public string? Tipo { get; set; }
     public bool PublicacaoRevogada { get; set; }
