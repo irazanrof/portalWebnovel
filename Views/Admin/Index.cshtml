@@ -1,0 +1,24 @@
+@{ ViewData["Title"] = "Administração"; }
+
+<h2 class="fw-bold mb-4">🛡️ Administração</h2>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold">🏷️ Gêneros</h4>
+                <p class="text-muted">Cadastre, edite e exclua os gêneros usados para classificar as webnovels.</p>
+                <a asp-controller="Genero" asp-action="Index" class="btn btn-primary">Gerenciar gêneros</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold">👥 Usuários</h4>
+                <p class="text-muted">Veja os usuários e revogue ou restaure a permissão de publicar.</p>
+                <a asp-controller="Admin" asp-action="Usuarios" class="btn btn-primary">Gerenciar usuários</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+@model WebnovelCriarViewModel
+@{ ViewData["Title"] = "Publicar webnovel"; }
+
+<div class="row justify-content-center"><div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3"><h4 class="mb-0">➕ Publicar webnovel</h4></div>
+        <div class="card-body p-4 bg-white">
+            <form asp-action="Criar" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Titulo" class="form-label fw-semibold"></label>
+                    <input asp-for="Titulo" class="form-control" />
+                    <span asp-validation-for="Titulo" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Sinopse" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Sinopse" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Sinopse" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Gêneros</label><br />
+                    @foreach (var g in Model.GenerosDisponiveis)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="GenerosIds" value="@g.Id" id="g@(g.Id)" checked="@Model.GenerosIds.Contains(g.Id)" />
+                            <label class="form-check-label" for="g@(g.Id)">@g.Nome</label>
+                        </div>
+                    }
+                </div>
+
+                <hr />
+                <h5>Primeiro capítulo</h5>
+                <p class="text-muted small">
+                    A webnovel só é publicada depois que você criar o primeiro capítulo.
+                    Se não criá-lo, nada é publicado.
+                </p>
+                <div class="mb-3">
+                    <label asp-for="NumeroPrimeiroCapitulo" class="form-label fw-semibold"></label>
+                    <select asp-for="NumeroPrimeiroCapitulo" class="form-select">
+                        <option value="1">1 (padrão)</option>
+                        <option value="0">0 (prólogo)</option>
+                    </select>
+                    <span asp-validation-for="NumeroPrimeiroCapitulo" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">&larr; Voltar</a>
+                    <button type="submit" class="btn btn-success px-4">Continuar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div></div>
+
+@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }

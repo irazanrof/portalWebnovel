@@ -1,0 +1,26 @@
+@model CapituloExcluirViewModel
+@{ ViewData["Title"] = "Excluir capítulo"; }
+
+<div class="row justify-content-center"><div class="col-lg-6">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-danger text-white py-3"><h4 class="mb-0">🗑️ Excluir capítulo</h4></div>
+        <div class="card-body p-4 bg-white">
+            <p>Tem certeza que deseja excluir o <strong>capítulo @Model.Numero &ndash; @Model.Titulo</strong> de <strong>@Model.WebnovelTitulo</strong>?</p>
+            <ul class="text-danger small">
+                @if (Model.TotalComentarios > 0)
+                {
+                    <li>Os @Model.TotalComentarios comentário(s) deste capítulo também serão apagados.</li>
+                }
+                @if (Model.CapitulosRenumerados > 0)
+                {
+                    <li>Os @Model.CapitulosRenumerados capítulo(s) seguinte(s) serão renumerados (cada um desce uma posição).</li>
+                }
+                <li>Esta ação não pode ser desfeita.</li>
+            </ul>
+            <form asp-action="Excluir" asp-route-id="@Model.Id" method="post" class="d-flex justify-content-between">
+                <a asp-controller="Webnovel" asp-action="Detalhes" asp-route-id="@Model.WebnovelId" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Sim, excluir</button>
+            </form>
+        </div>
+    </div>
+</div></div>

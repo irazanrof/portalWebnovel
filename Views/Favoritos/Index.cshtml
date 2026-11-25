@@ -1,0 +1,36 @@
+@model Favoritos
+@{
+    ViewData["Title"] = "Meus favoritos";
+    var nomes = (IDictionary<int, string>)ViewBag.Nomes;
+}
+
+<h2 class="fw-bold mb-3">❤️ Meus favoritos</h2>
+@if (!Model.Obras.Any())
+{
+    <div class="text-center py-5 bg-white rounded shadow-sm"><p class="text-muted fs-5 mb-0">Você ainda não tem favoritos. Abra uma webnovel e clique em "Favoritar".</p></div>
+}
+else
+{
+    <div class="card shadow-sm border-0"><div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark"><tr><th>Título</th><th>Autor</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var o in Model.Obras)
+                {
+                    <tr>
+                        <td><a asp-controller="Webnovel" asp-action="Detalhes" asp-route-id="@o.Id" class="text-decoration-none fw-semibold">@o.Titulo</a></td>
+                        <td>@(nomes.TryGetValue(o.AutorId, out var n) ? n : "?")</td>
+                        <td><span class="badge @o.Status.ClasseBadge()">@o.Status.Descricao()</span></td>
+                        <td class="text-end">
+                            <form asp-action="Remover" method="post">
+                                <input type="hidden" name="webnovelId" value="@o.Id" />
+                                <input type="hidden" name="voltarPara" value="lista" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div></div>
+}

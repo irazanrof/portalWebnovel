@@ -1,0 +1,59 @@
+@model CapituloViewModel
+@{
+    ViewData["Title"] = Model.Editando ? "Editar capítulo" : "Novo capítulo";
+    string acao = Model.PrimeiroCapitulo ? "PrimeiroCapitulo" : (Model.Editando ? "Editar" : "Criar");
+    string rotuloBotao = Model.PrimeiroCapitulo ? "🚀 Publicar webnovel" : (Model.Editando ? "💾 Salvar alterações" : "💾 Publicar capítulo");
+}
+
+@if (!Model.PrimeiroCapitulo)
+{
+    <nav class="mb-3"><a asp-controller="Webnovel" asp-action="Detalhes" asp-route-id="@Model.WebnovelId">&larr; @Model.WebnovelTitulo</a></nav>
+}
+
+<div class="card shadow-sm border-0 mb-3"><div class="card-body p-4">
+    <form asp-action="@acao" asp-route-id="@(Model.Editando ? Model.Id : (int?)null)" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="WebnovelId" />
+        <input type="hidden" asp-for="WebnovelTitulo" />
+        <input type="hidden" asp-for="Numero" />
+        <input type="hidden" asp-for="PrimeiroCapitulo" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="d-flex align-items-baseline gap-2">
+            <h3 class="fw-bold text-nowrap mb-0">Capítulo @Model.Numero &ndash;</h3>
+            <input asp-for="Titulo" class="form-control capitulo-titulo-input" placeholder="Título do capítulo" aria-label="Título do capítulo" />
+        </div>
+        <span asp-validation-for="Titulo" class="text-danger small"></span>
+
+        <p class="text-muted small mt-2 mb-0">
+            @if (Model.Editando)
+            {
+                <span>A data de modificação será atualizada ao salvar; a de publicação não muda.</span>
+            }
+            else
+            {
+                <span>O número e a data de publicação são definidos automaticamente pelo sistema.</span>
+            }
+        </p>
+        <hr />
+
+        <textarea asp-for="Conteudo" class="form-control capitulo-texto-input" rows="18"
+                  placeholder="Escreva aqui o texto do capítulo..." aria-label="Texto do capítulo"></textarea>
+        <span asp-validation-for="Conteudo" class="text-danger small"></span>
+        <hr />
+
+        <div class="d-flex justify-content-between">
+            @if (Model.PrimeiroCapitulo)
+            {
+                <a asp-controller="Webnovel" asp-action="Criar" asp-route-voltar="true" class="btn btn-outline-secondary">&larr; Voltar</a>
+            }
+            else
+            {
+                <a asp-controller="Webnovel" asp-action="Detalhes" asp-route-id="@Model.WebnovelId" class="btn btn-outline-secondary">&larr; Cancelar</a>
+            }
+            <button type="submit" class="btn btn-success px-4">@rotuloBotao</button>
+        </div>
+    </form>
+</div></div>
+
+@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }

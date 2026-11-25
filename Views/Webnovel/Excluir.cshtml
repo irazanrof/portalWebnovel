@@ -1,0 +1,16 @@
+@model Webnovel
+@{ ViewData["Title"] = "Excluir webnovel"; }
+
+<div class="row justify-content-center"><div class="col-lg-6">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-danger text-white py-3"><h4 class="mb-0">🗑️ Excluir webnovel</h4></div>
+        <div class="card-body p-4 bg-white">
+            <p>Tem certeza que deseja excluir <strong>@Model.Titulo</strong>?</p>
+            <p class="text-danger small">Todos os capítulos, comentários e avaliações da obra serão apagados. Esta ação não pode ser desfeita.</p>
+            <form asp-action="Excluir" asp-route-id="@Model.Id" method="post" class="d-flex justify-content-between">
+                <a asp-action="Detalhes" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Sim, excluir</button>
+            </form>
+        </div>
+    </div>
+</div></div>

@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Início";
+    var logado = Context.Session.GetInt32("UsuarioId") != null;
+}
+
+<div class="p-5 mb-4 bg-dark text-white rounded-3 shadow-sm">
+    <h1 class="display-5 fw-bold text-warning">📖 Portal de Webnovels</h1>
+    <p class="fs-5">Leia, publique, comente e avalie webnovels. Tudo gratuito.</p>
+    <a class="btn btn-warning btn-lg" asp-controller="Webnovel" asp-action="Index">Explorar webnovels</a>
+    @if (!logado)
+    {
+        <a class="btn btn-outline-light btn-lg" asp-controller="Conta" asp-action="Cadastrar">Criar conta</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Conta" asp-action="Entrar">Entrar</a>
+    }
+    else
+    {
+        <a class="btn btn-outline-light btn-lg" asp-controller="Webnovel" asp-action="Criar">Publicar uma obra</a>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4"><div class="card h-100 shadow-sm border-0"><div class="card-body">
+        <h5>📚 Biblioteca e Favoritos</h5><p class="text-muted mb-0">Guarde as obras que você acompanha e as que mais gosta.</p>
+    </div></div></div>
+    <div class="col-md-4"><div class="card h-100 shadow-sm border-0"><div class="card-body">
+        <h5>🕘 Continue de onde parou</h5><p class="text-muted mb-0">O histórico guarda o último capítulo lido de cada obra.</p>
+    </div></div></div>
+    <div class="col-md-4"><div class="card h-100 shadow-sm border-0"><div class="card-body">
+        <h5>✍️ Publique</h5><p class="text-muted mb-0">Qualquer usuário pode virar autor e publicar suas histórias.</p>
+    </div></div></div>
+</div>

@@ -1,0 +1,69 @@
+@model PortalWebnovels.Models.ViewModels.AdminViewModel
+@{ ViewData["Title"] = "Administração"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">🛡️ Administração de usuários</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">&larr; Administração</a>
+</div>
+
+<form asp-action="Usuarios" method="get" class="row g-2 mb-3">
+    <div class="col-sm-8 col-md-6">
+        <input type="text" name="busca" value="@Model.Busca" class="form-control"
+               placeholder="Pesquisar por nome ou e-mail" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">🔍 Pesquisar</button>
+        @if (!string.IsNullOrWhiteSpace(Model.Busca))
+        {
+            <a asp-action="Usuarios" class="btn btn-outline-secondary">Limpar</a>
+        }
+    </div>
+</form>
+
+<div class="card shadow-sm border-0"><div class="card-body p-0">
+    @if (!Model.Usuarios.Any())
+    {
+        <div class="text-center py-5"><p class="text-muted mb-0">Nenhum usuário encontrado@(string.IsNullOrWhiteSpace(Model.Busca) ? "" : " para “" + Model.Busca + "”").</p></div>
+    }
+    else
+    {
+    <table class="table align-middle mb-0">
+        <thead class="table-dark"><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Publicação</th><th style="width:380px;">Ação</th></tr></thead>
+        <tbody>
+            @foreach (var u in Model.Usuarios)
+            {
+                var comum = u as UsuarioComum;
+                <tr>
+                    <td class="fw-semibold">@u.Nome</td>
+                    <td>@u.Email</td>
+                    <td>@u.Tipo</td>
+                    <td>
+                        @if (comum == null) { <span class="badge bg-secondary">sempre permitida</span> }
+                        else if (comum.PublicacaoRevogada) { <span class="badge bg-danger">revogada</span><div class="small text-muted">@comum.MotivoRevogacao</div> }
+                        else { <span class="badge bg-success">permitida</span> }
+                    </td>
+                    <td>
+                        @if (comum != null && !comum.PublicacaoRevogada)
+                        {
+                            <form asp-action="Revogar" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="usuarioId" value="@u.Id" />
+                                <input type="hidden" name="busca" value="@Model.Busca" />
+                                <input type="text" name="motivo" class="form-control form-control-sm" placeholder="Motivo da revogação" required />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Revogar</button>
+                            </form>
+                        }
+                        else if (comum != null)
+                        {
+                            <form asp-action="Restaurar" method="post">
+                                <input type="hidden" name="usuarioId" value="@u.Id" />
+                                <input type="hidden" name="busca" value="@Model.Busca" />
+                                <button type="submit" class="btn btn-sm btn-outline-success">Restaurar permissão</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }
+</div></div>

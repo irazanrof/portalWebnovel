@@ -1,0 +1,27 @@
+@model PerfilViewModel
+@{ ViewData["Title"] = "Meu perfil"; }
+
+<div class="row justify-content-center"><div class="col-lg-6 col-md-8">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white py-3"><h4 class="mb-0">👤 Meu perfil</h4></div>
+        <div class="card-body p-4 bg-white">
+            <p class="mb-1"><strong>E-mail:</strong> @Model.Email</p>
+            <p class="mb-3"><strong>Tipo de conta:</strong> @Model.Tipo</p>
+            @if (Model.PublicacaoRevogada)
+            {
+                <div class="alert alert-warning">Sua permissão de publicar está <strong>revogada</strong>. Motivo: @Model.MotivoRevogacao</div>
+            }
+            <form asp-action="Perfil" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <div class="mb-3">
+                    <label asp-for="Nome" class="form-label fw-semibold"></label>
+                    <input asp-for="Nome" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                </div>
+                <button type="submit" class="btn btn-success">💾 Salvar</button>
+            </form>
+        </div>
+    </div>
+</div></div>
+
+@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }

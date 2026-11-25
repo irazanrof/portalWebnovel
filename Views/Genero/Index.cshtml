@@ -1,0 +1,50 @@
+@model IEnumerable<PortalWebnovels.Models.Genero>
+@{
+    ViewData["Title"] = "Gêneros";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Gêneros</h2>
+        <p class="text-muted mb-0">Categorias usadas para classificar as webnovels.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">&larr; Administração</a>
+        <a asp-action="Criar" class="btn btn-success shadow-sm">➕ Novo gênero</a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0"><div class="card-body p-0">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5"><p class="text-muted fs-5 mb-0">Nenhum gênero cadastrado.</p></div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th class="text-center" style="width: 200px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.Nome</td>
+                            <td class="text-center">
+                                <a asp-controller="Webnovel" asp-action="Index" asp-route-generoId="@item.Id" class="btn btn-sm btn-outline-primary">Ver obras</a>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-outline-warning" title="Editar">✏️</a>
+                                    <a asp-action="Excluir" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Excluir">🗑️</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div></div>
